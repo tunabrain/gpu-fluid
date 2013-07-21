@@ -89,7 +89,7 @@ static void render() {
     lodepng_encode24_file(path, frame, FWidth, FHeight);
 #endif
 
-    const float deltaT = 0.499f*1e-3;
+    const float deltaT = 0.499f*1e-3*1920/FWidth;
     fluid->setup();
     float T = 0.0;
     while (T < deltaT) {

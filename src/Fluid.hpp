@@ -33,6 +33,8 @@ class Shader;
 
 class Fluid {
     RenderTarget *_rt;
+    BufferObject *_blackPbo;
+
     Shader *_matVecProduct, *_addSub, *_scaledAdd, *_advect, *_applyP;
     Shader *_buildPRhs, *_buildPMat, *_precon, *_divide, *_addReduce;
     Shader *_buildVorticity, *_confineV, *_addVorticity, *_buildHMat;
@@ -40,13 +42,14 @@ class Fluid {
     Shader *_particleAdvect, *_particleFromGrid, *_particleToGrid, *_particleRender;
     Shader *_particleHisto, *_particleBucket, *_histoDownsample, *_histoUpsample;
     Shader *_particleSpawn, *_set, *_maxReduce, *_calcVelocity, *_inflow, *_spawnInflow;
-    BufferObject *_blackPbo;
+
     Texture *_dotPTransfer[2];
     Texture *_u, *_v, *_d, *_t, *_aDiag, *_aPlusX, *_aPlusY;
     Texture *_p, *_r, *_z, *_s, *_tmp1, *_tmp2, *_uTmp, *_vTmp, *_tTmp, *_dTmp;
     Texture *_particlePos, *_particleQ;
     Texture *_particlePosTmp, *_particleQTmp;
     Texture **_histoCount, **_histoIndex;
+
     int _histoLevels;
 
     int _width, _height;
@@ -71,25 +74,34 @@ class Fluid {
     void shaderQuad(Shader &s, int x, int y, int w, int h);
     void shaderLoop(Shader &s, int x, int y, int w, int h);
     void shaderQuad(Shader &s, int x, int y, int w, int h, int vx, int vy, int vw, int vh, bool filled = true);
+
     void parallelReduce(Shader &s, Texture &src, Texture &target, int subdiv);
     void addReduce(Texture &src, Texture &target);
     float maxReduce(Texture &src, Texture &target);
-    void matVecProduct(Texture &aDiag, Texture &aPlusX, Texture &aPlusY, Texture &b, Texture &result, Texture &ab);
-    void addSub(Texture &subA, Texture &subB, Texture &addA, Texture &addB, Texture &dstSub, Texture &dstAdd, Texture &alpha, Texture &beta);
-    void scaledAdd(Texture &addA, Texture &addB, Texture &dst, Texture &alpha, Texture &beta);
+
+
     void advect(Texture &src, Texture &dst, float timestep, float offX, float offY, int w, int h);
-    void applyPressure(Texture &p, Texture &dstU, Texture &dstV, float timestep);
-    void applyPreconditioner(Texture &r, Texture &z, Texture &ab);
-    void calcVelocity(Texture &target);
+
     void buildPRhs(Texture &rhs);
     void buildPMat(float timestep);
     void buildHMat(float timestep);
+
+    void matVecProduct(Texture &aDiag, Texture &aPlusX, Texture &aPlusY, Texture &b, Texture &result, Texture &ab);
+    void addSub(Texture &subA, Texture &subB, Texture &addA, Texture &addB, Texture &dstSub, Texture &dstAdd, Texture &alpha, Texture &beta);
+    void scaledAdd(Texture &addA, Texture &addB, Texture &dst, Texture &alpha, Texture &beta);
+    void applyPreconditioner(Texture &r, Texture &z, Texture &ab);
+    void conjugateGradients(int &iters);
+
+    void applyPressure(Texture &p, Texture &dstU, Texture &dstV, float timestep);
+
+    void calcVelocity(Texture &target);
     void buildVorticity(Texture &dst);
     void confineVorticity(float epsilon, Texture &src, Texture &dstU, Texture &dstV);
     void addVorticity(float timestep, Texture &srcU, Texture &srcV, Texture &dstU, Texture &dstV);
     void addBuoyancy(float timestep, Texture &dstV);
+
     int addInflow(float x, float y, float w, float h, int pAmount, const Vec4 &qMin, const Vec4 &qVal);
-    void conjugateGradients(int &iters);
+
     void particleAdvect(float timestep);
     void particleToGrid();
     void particleFromGrid(Texture &q);
@@ -97,20 +109,11 @@ class Fluid {
     void particleCount();
     void particleBucket();
     void particleSpawn();
+
     void histoPyramid();
+
     void clear(Texture &a);
     void copy(Texture &dst, Texture &src);
-
-    void test();
-    void testAddReduce();
-    void testMaxReduce();
-    void testMatVecP();
-    void testAddSub();
-    void testScaledAdd();
-    void testClear();
-    void testCopy();
-    void testPressureMatrix();
-    void testHistoPyramid();
 
 public:
     Fluid(int width, int height);
