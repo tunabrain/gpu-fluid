@@ -5,7 +5,7 @@ OpenGL GPU Fluid Solver
 
 This project implements a 2D fluid solver completely on the GPU using OpenGL 4.3.
 
-The solver features vorticity confinement, fluid implicit particle, 3rd order Runge-Kutta advection, a conjugate gradient solver with incomplete Poisson preconditioner, and a heat diffusion/buoyancy model.
+The solver features a marker-and-cell grid, vorticity confinement, fluid implicit particle, 3rd order Runge-Kutta advection, a conjugate gradient solver with incomplete Poisson preconditioner, and a heat diffusion/buoyancy model.
 
 Compilation
 -----------
