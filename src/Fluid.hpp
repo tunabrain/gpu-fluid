@@ -24,7 +24,7 @@ freely, subject to the following restrictions:
 #ifndef FLUID_HPP_
 #define FLUID_HPP_
 
-#include "Math/Vec4.hpp"
+#include "math/Vec4.hpp"
 
 class BufferObject;
 class RenderTarget;

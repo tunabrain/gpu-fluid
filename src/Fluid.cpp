@@ -28,10 +28,10 @@ freely, subject to the following restrictions:
 #include <math.h>
 
 #include "Fluid.hpp"
-#include "Render/RenderTarget.hpp"
-#include "Render/BufferObject.hpp"
-#include "Render/Texture.hpp"
-#include "Render/Shader.hpp"
+#include "render/RenderTarget.hpp"
+#include "render/BufferObject.hpp"
+#include "render/Texture.hpp"
+#include "render/Shader.hpp"
 #include "Debug.hpp"
 #include "File.hpp"
 #include "Util.hpp"
@@ -61,38 +61,38 @@ Fluid::Fluid(int width, int height) : _width(width), _height(height) {
     _pTexW = 2048;
     _pTexH = (_particleMax - 1)/_pTexW + 1;
 
-    _matVecProduct    = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "MatVecProduct.frag", 2);
-    _addSub           = new Shader("src/shaders/fluid/", "Preamble.txt", "ScalarOp.vert", 0, "AddSub.frag", 2);
-    _scaledAdd        = new Shader("src/shaders/fluid/", "Preamble.txt", "ScalarOp.vert", 0, "ScaledAdd.frag", 1);
-    _advect           = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "Advect.frag", 1);
-    _precon           = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "ApplyPreconditioner.frag", 2);
-    _applyP           = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "ApplyPressure.frag", 2);
-    _buildPRhs        = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "BuildPressureRhs.frag", 1);
-    _buildPMat        = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "BuildPressureMatrix.frag", 3);
-    _divide           = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "Divide.frag", 1);
-    _gather           = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "Gather.frag", 1);
-    _addReduce        = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "AddReduce.frag", 1);
-    _maxReduce        = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "MaxReduce.frag", 1);
-    _buildVorticity   = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "BuildVorticity.frag", 1);
-    _confineV         = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "ConfineVorticity.frag", 2);
-    _addVorticity     = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "AddVorticity.frag", 2);
-    _buildHMat        = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "BuildHeatMatrix.frag", 3);
-    _addBuoyancy      = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "AddBuoyancy.frag", 1);
-    _histoDownsample  = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "HistoDownsample.frag", 1);
-    _histoUpsample    = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "HistoUpsample.frag", 1);
-    _clampCounts      = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "ClampCounts.frag", 1);
-    _particleSpawn    = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "ParticleSpawn.frag", 0);
-    _particleToGrid   = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "ParticleToGrid.frag", 4);
-    _set              = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "Set.frag", 1);
-    _calcVelocity     = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "CalcVelocity.frag", 1);
-    _inflow           = new Shader("src/shaders/fluid/", "Preamble.txt", "Fluid.vert", 0, "Inflow.frag", 1);
-    _particleAdvect   = new Shader("src/shaders/fluid/", "Preamble.txt", "ParticleQuad.vert", 0, "ParticleAdvect.frag", 1);
-    _particleFromGrid = new Shader("src/shaders/fluid/", "Preamble.txt", "ParticleQuad.vert", 0, "ParticleFromGrid.frag", 1);
-    _fastSweep        = new Shader("src/shaders/fluid/", "Preamble.txt", "ParticleQuad.vert", 0, "FastSweep.frag", 0);
-    _particleRender   = new Shader("src/shaders/fluid/", "Preamble.txt", "ParticleRender.vert", 0, "ParticleRender.frag", 1);
-    _particleHisto    = new Shader("src/shaders/fluid/", "Preamble.txt", "ParticleCount.vert", 0, 0, 0);
-    _particleBucket   = new Shader("src/shaders/fluid/", "Preamble.txt", "ParticleBucket.vert", 0, 0, 0);
-    _spawnInflow      = new Shader("src/shaders/fluid/", "Preamble.txt", "SpawnInflowParticles.vert", 0, 0, 0);
+    _matVecProduct    = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "MatVecProduct.frag", 2);
+    _addSub           = new Shader("src/shaders/Fluid/", "Preamble.txt", "ScalarOp.vert", 0, "AddSub.frag", 2);
+    _scaledAdd        = new Shader("src/shaders/Fluid/", "Preamble.txt", "ScalarOp.vert", 0, "ScaledAdd.frag", 1);
+    _advect           = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "Advect.frag", 1);
+    _precon           = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "ApplyPreconditioner.frag", 2);
+    _applyP           = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "ApplyPressure.frag", 2);
+    _buildPRhs        = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "BuildPressureRhs.frag", 1);
+    _buildPMat        = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "BuildPressureMatrix.frag", 3);
+    _divide           = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "Divide.frag", 1);
+    _gather           = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "Gather.frag", 1);
+    _addReduce        = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "AddReduce.frag", 1);
+    _maxReduce        = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "MaxReduce.frag", 1);
+    _buildVorticity   = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "BuildVorticity.frag", 1);
+    _confineV         = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "ConfineVorticity.frag", 2);
+    _addVorticity     = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "AddVorticity.frag", 2);
+    _buildHMat        = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "BuildHeatMatrix.frag", 3);
+    _addBuoyancy      = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "AddBuoyancy.frag", 1);
+    _histoDownsample  = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "HistoDownsample.frag", 1);
+    _histoUpsample    = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "HistoUpsample.frag", 1);
+    _clampCounts      = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "ClampCounts.frag", 1);
+    _particleSpawn    = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "ParticleSpawn.frag", 0);
+    _particleToGrid   = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "ParticleToGrid.frag", 4);
+    _set              = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "Set.frag", 1);
+    _calcVelocity     = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "CalcVelocity.frag", 1);
+    _inflow           = new Shader("src/shaders/Fluid/", "Preamble.txt", "Fluid.vert", 0, "Inflow.frag", 1);
+    _particleAdvect   = new Shader("src/shaders/Fluid/", "Preamble.txt", "ParticleQuad.vert", 0, "ParticleAdvect.frag", 1);
+    _particleFromGrid = new Shader("src/shaders/Fluid/", "Preamble.txt", "ParticleQuad.vert", 0, "ParticleFromGrid.frag", 1);
+    _fastSweep        = new Shader("src/shaders/Fluid/", "Preamble.txt", "ParticleQuad.vert", 0, "FastSweep.frag", 0);
+    _particleRender   = new Shader("src/shaders/Fluid/", "Preamble.txt", "ParticleRender.vert", 0, "ParticleRender.frag", 1);
+    _particleHisto    = new Shader("src/shaders/Fluid/", "Preamble.txt", "ParticleCount.vert", 0, 0, 0);
+    _particleBucket   = new Shader("src/shaders/Fluid/", "Preamble.txt", "ParticleBucket.vert", 0, 0, 0);
+    _spawnInflow      = new Shader("src/shaders/Fluid/", "Preamble.txt", "SpawnInflowParticles.vert", 0, 0, 0);
 
     _blackPbo = new BufferObject(PIXEL_UNPACK_BUFFER, _tWidth*_tHeight*sizeof(float));
     _blackPbo->bind();
