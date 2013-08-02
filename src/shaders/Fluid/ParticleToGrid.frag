@@ -20,7 +20,7 @@ void evalContribution(ivec2 iCoord, inout vec4 C, inout float W) {
         return;
     
     int offset = int(texelFetch(Offsets, iCoord, 0).r);
-    int count  = int(texelFetch( Counts, iCoord, 0).r >> 28);
+    int count  = int(texelFetch( Counts, iCoord, 0).r >> uint(28));
     
     for (int i = 0; i < count; i++) {
         ivec2 coord = ivec2((offset + i) % PointInfo.x, (offset + i)/PointInfo.x);
